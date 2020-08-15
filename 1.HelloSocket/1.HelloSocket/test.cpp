@@ -54,6 +54,8 @@ void test2() {
 
 
 
+
+
 int main() {
 	//Æô¶¯windows socket
 
