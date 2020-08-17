@@ -89,6 +89,12 @@ public:
 		else {
 			//printf("建立Socket=<%d>成功...\n", _sock);
 		}
+#ifndef _WIN32
+		int one=1;
+		if (setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one)) < 0) {
+			Close();
+		}
+#endif
 		return _sock;
 	}
 

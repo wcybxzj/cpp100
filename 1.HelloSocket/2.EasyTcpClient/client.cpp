@@ -33,7 +33,9 @@ void cmdThread(EasyTcpClient* client) {
 //手动输入版
 void test1() {
 	EasyTcpClient client;
-	client.Connect("127.0.0.1", 4567);
+	//client.Connect("127.0.0.1", 4567);
+	//client.Connect("65.49.211.61", 4567);
+	client.Connect("192.168.204.132", 4567);
 
 	std::thread t1(cmdThread, &client);
 	t1.detach();
@@ -52,7 +54,9 @@ void test1() {
 //自动发送版
 void test2() {
 	EasyTcpClient client;
-	client.Connect("127.0.0.1", 4567);
+	//client.Connect("127.0.0.1", 4567);
+	//client.Connect("65.49.211.61", 4567);
+	client.Connect("192.168.204.132", 4567);
 
 	Login login;
 	strcpy(login.userName, "ybx");
