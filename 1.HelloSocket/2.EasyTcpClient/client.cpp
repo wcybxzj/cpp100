@@ -30,33 +30,48 @@ void cmdThread(EasyTcpClient* client) {
 }
 
 
-int main() {
+//手动输入版
+void test1() {
 	EasyTcpClient client;
 	client.Connect("127.0.0.1", 4567);
 
-
-
 	std::thread t1(cmdThread, &client);
 	t1.detach();
-	//std::thread t2(cmdThread, &client2);
-	//t2.detach();
-
-
-	//Login login;
-	//strcpy(login.userName, "ybx");
-	//strcpy(login.PassWord, "12345");
 
 	while (client.isRun())
 	{
 		client.OnRun();
-		
-//		client.SendData(&login);
 	}
 
 	client.Close();
 
 	printf("client已经退出\n");
 	getchar();
-	
+}
+
+//自动发送版
+void test2() {
+	EasyTcpClient client;
+	client.Connect("127.0.0.1", 4567);
+
+	Login login;
+	strcpy(login.userName, "ybx");
+	strcpy(login.PassWord, "12345");
+
+	while (client.isRun())
+	{
+		client.OnRun();
+		client.SendData(&login);
+	}
+
+	client.Close();
+
+	printf("client已经退出\n");
+	getchar();
+}
+
+int main() {
+	//test1();
+	test2();
 	return 0;
 }

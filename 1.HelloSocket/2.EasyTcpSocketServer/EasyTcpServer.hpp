@@ -299,6 +299,9 @@ public:
 		Logout* logout;
 		LoginResult ret;
 		LogoutResult ret1;
+
+		static int num = 0;
+		printf("OnNetMsg num:%d\n", num);
 		switch (header->cmd)
 		{
 		case CMD_LOGIN:
@@ -323,6 +326,7 @@ public:
 			send(_cSock, (char*)&header, sizeof(DataHeader), 0);
 			break;
 		}
+		num++;
 	}
 
 	//发送指定socket数据

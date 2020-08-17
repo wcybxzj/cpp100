@@ -178,50 +178,73 @@ public:
 	//接收缓冲区
 	//char _szRecv[RECV_BUFF_SZIE] = {};
 
+	////接收数据 处理粘包 拆分包
+	//int RecvData(SOCKET cSock)
+	//{
+	//	// 5 接收数据
+	//	char* szRecv = _szMsgBuf + _lastPos;
+	//	int nLen = (int)recv(cSock, szRecv, (RECV_BUFF_SZIE)-_lastPos, 0);
+	//	//printf("nLen=%d\n", nLen);
+	//	if (nLen <= 0)
+	//	{
+	//		printf("<socket=%d>与服务器断开连接，任务结束。\n", cSock);
+	//		return -1;
+	//	}
+	//	//将收取到的数据拷贝到消息缓冲区
+	//	//memcpy(_szMsgBuf+_lastPos, _szRecv, nLen);
+	//	//消息缓冲区的数据尾部位置后移
+	//	_lastPos += nLen;
+	//	//判断消息缓冲区的数据长度大于消息头DataHeader长度
+	//	while (_lastPos >= sizeof(DataHeader))
+	//	{
+	//		//这时就可以知道当前消息的长度
+	//		DataHeader* header = (DataHeader*)_szMsgBuf;
+	//		//判断消息缓冲区的数据长度大于消息长度
+	//		if (_lastPos >= header->dataLength)
+	//		{
+	//			//消息缓冲区剩余未处理数据的长度
+	//			int nSize = _lastPos - header->dataLength;
+	//			//处理网络消息
+	//			OnNetMsg(header);
+	//			//将消息缓冲区剩余未处理数据前移
+	//			memcpy(_szMsgBuf, _szMsgBuf + header->dataLength, nSize);
+	//			//消息缓冲区的数据尾部位置前移
+	//			_lastPos = nSize;
+	//		}
+	//		else {
+	//			//消息缓冲区剩余数据不够一条完整消息
+	//			break;
+	//		}
+	//	}
+	//	return 0;
+	//}
+
 	//接收数据 处理粘包 拆分包
-	int RecvData(SOCKET cSock)
+	int RecvData(SOCKET _cSock)
 	{
-		// 5 接收数据
-		char* szRecv = _szMsgBuf + _lastPos;
-		int nLen = (int)recv(cSock, szRecv, (RECV_BUFF_SZIE)-_lastPos, 0);
-		//printf("nLen=%d\n", nLen);
+		//缓冲区
+		char szRecv[4096] = {};
+		// 5 接收客户端数据
+		int nLen = (int)recv(_cSock, szRecv, sizeof(DataHeader), 0);
+		DataHeader* header = (DataHeader*)szRecv;
 		if (nLen <= 0)
 		{
-			printf("<socket=%d>与服务器断开连接，任务结束。\n", cSock);
+			printf("与服务器断开连接，任务结束。\n");
 			return -1;
 		}
-		//将收取到的数据拷贝到消息缓冲区
-		//memcpy(_szMsgBuf+_lastPos, _szRecv, nLen);
-		//消息缓冲区的数据尾部位置后移
-		_lastPos += nLen;
-		//判断消息缓冲区的数据长度大于消息头DataHeader长度
-		while (_lastPos >= sizeof(DataHeader))
-		{
-			//这时就可以知道当前消息的长度
-			DataHeader* header = (DataHeader*)_szMsgBuf;
-			//判断消息缓冲区的数据长度大于消息长度
-			if (_lastPos >= header->dataLength)
-			{
-				//消息缓冲区剩余未处理数据的长度
-				int nSize = _lastPos - header->dataLength;
-				//处理网络消息
-				OnNetMsg(header);
-				//将消息缓冲区剩余未处理数据前移
-				memcpy(_szMsgBuf, _szMsgBuf + header->dataLength, nSize);
-				//消息缓冲区的数据尾部位置前移
-				_lastPos = nSize;
-			}
-			else {
-				//消息缓冲区剩余数据不够一条完整消息
-				break;
-			}
-		}
+		recv(_cSock, szRecv + sizeof(DataHeader), header->dataLength - sizeof(DataHeader), 0);
+
+		OnNetMsg(header);
 		return 0;
 	}
+
 
 	//响应网络消息
 	virtual void OnNetMsg(DataHeader* header)
 	{
+		static int num = 0;
+		printf("OnNetMsg num:%d\n", num);
+
 		switch (header->cmd)
 		{
 		case CMD_LOGIN_RESULT:
@@ -253,6 +276,7 @@ public:
 			printf("<socket=%d>收到未定义消息,数据长度：%d\n", _sock, header->dataLength);
 		}
 		}
+		num++;
 	}
 
 	//发送数据
