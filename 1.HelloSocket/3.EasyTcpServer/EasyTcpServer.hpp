@@ -23,6 +23,7 @@
 #ifndef _EasyTcpServer_hpp_
 #define _EasyTcpServer_hpp_
 #ifdef _WIN32
+	#define FD_SETSIZE 1024 //windows select支持超过64个fd 定义在WinSock2.h前面
 	#define _CRT_SECURE_NO_WARNINGS
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 	#define WIN32_LEAN_AND_MEAN

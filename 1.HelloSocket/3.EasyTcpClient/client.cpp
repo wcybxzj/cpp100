@@ -23,7 +23,6 @@ void cmdThread() {
 	}
 }
 
-
 void test1() {
 	EasyTcpClient client;
 	client.Connect("127.0.0.1", 4567);
@@ -52,7 +51,7 @@ void test2() {
 	//linux:FD_SETSIZE 是1024
 
 	//const int cCount = FD_SETSIZE-1;
-	const int cCount = 1000;//windows: -1是服务监听的fd  所以客户端最多启动63个fd
+	const int cCount = 10;//windows: -1是服务监听的fd  所以客户端最多启动63个fd
 	EasyTcpClient* client[cCount];
 
 	for (int i = 0; i < cCount; i++)
@@ -62,9 +61,10 @@ void test2() {
 
 	for (int i = 0; i < cCount; i++)
 	{
-		//client[i]->Connect("127.0.0.1", 4567);
+		client[i]->Connect("127.0.0.1", 4567);
 		//client[i]->Connect("65.49.211.61", 4567);
-		client[i]->Connect("192.168.204.132", 4567);
+		//client[i]->Connect("39.97.236.187", 4567);
+		//client[i]->Connect("192.168.204.132", 4567);
 	}
 
 	std::thread t1(cmdThread);

@@ -25,20 +25,20 @@
 #define _EasyTcpClient_hpp_
 
 #ifdef _WIN32
-#define _CRT_SECURE_NO_WARNINGS
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#define WIN32_LEAN_AND_MEAN
-#include<windows.h>
-#include<WinSock2.h>
-#pragma comment(lib,"ws2_32.lib")
+	#define _CRT_SECURE_NO_WARNINGS
+	#define _WINSOCK_DEPRECATED_NO_WARNINGS
+	#define WIN32_LEAN_AND_MEAN
+	#define FD_SETSIZE 1024 //windows select支持超过64个fd 定义在WinSock2.h前面
+	#include<windows.h>
+	#include<WinSock2.h>
+	#pragma comment(lib,"ws2_32.lib")
 #else
-#include<unistd.h> //uni std
-#include<arpa/inet.h>
-#include<string.h>
-
-#define SOCKET int
-#define INVALID_SOCKET  (SOCKET)(~0)
-#define SOCKET_ERROR            (-1)
+	#include<unistd.h> //uni std
+	#include<arpa/inet.h>
+	#include<string.h>
+	#define SOCKET int
+	#define INVALID_SOCKET  (SOCKET)(~0)
+	#define SOCKET_ERROR            (-1)
 #endif
 #include <stdio.h>
 #include <thread>
