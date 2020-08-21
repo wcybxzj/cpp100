@@ -22,8 +22,9 @@
 
 #ifndef _EasyTcpServer_hpp_
 #define _EasyTcpServer_hpp_
+
 #ifdef _WIN32
-	#define FD_SETSIZE 1024 //windows select支持超过64个fd 定义在WinSock2.h前面
+	#define FD_SETSIZE 10024 //windows select支持超过64个fd 定义在WinSock2.h前面
 	#define _CRT_SECURE_NO_WARNINGS
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 	#define WIN32_LEAN_AND_MEAN
@@ -42,14 +43,15 @@
 	#define SOCKET_ERROR            (-1)
 #endif
 
-#include <iostream>
-#include <thread>
 #include<stdio.h>
 #include<vector>
-
-#include "MessageHeader.hpp"
-
-#define  _EasyTcpServer_hpp_
+#include<map>
+#include<thread>
+#include<mutex>
+#include<atomic>
+#include<functional>
+#include"MessageHeader.hpp"
+#include"CELLTimestamp.hpp"
 
 #ifndef RECV_BUFF_SIZE
 	//缓冲区
@@ -101,11 +103,23 @@ class EasyTcpServer
 private:
 	SOCKET _sock;
 	std::vector<ClientSocket*> _clients;//尽量用堆内存 c++栈内存太小
+	CELLTimestamp _tTime;
+
+protected:
+	//SOCKET recv计数
+	std::atomic_int _recvCount;
+	//收到消息计数
+	std::atomic_int _msgCount;
+	//客户端计数
+	std::atomic_int _clientCount;
 
 public:
 	EasyTcpServer()
 	{
 		_sock = INVALID_SOCKET;
+		_recvCount = 0;
+		_msgCount = 0;
+		_clientCount = 0;
 	}
 
 	virtual ~EasyTcpServer()
@@ -197,6 +211,7 @@ public:
 		return ret;
 	}
 
+
 	//接受客户端连接
 	SOCKET Accept() {
 		sockaddr_in clientAddr = {};
@@ -209,16 +224,18 @@ public:
 		cSock = accept(_sock, (sockaddr*)&clientAddr, (socklen_t*)&nAddrLen);
 #endif
 
-		if (INVALID_SOCKET == cSock) {
+		if (INVALID_SOCKET == cSock) 
+		{
 			printf("socket=<%d>,错误, 接收到无效SOCKET... \n",(int)_sock);
 		}
-		else {
+		else 
+		{
 			NewUserJoin userJoin;
 			SendDataToAll(&userJoin);
 
 			_clients.push_back(new ClientSocket(cSock));
-			printf("socket=<%d>,新客户端加入：socket = %d,IP = %s \n",
-				(int)cSock, (int)_sock, inet_ntoa(clientAddr.sin_addr));
+			printf("socket=<%d>,新客户端<%d>加入：socket = %d,IP = %s \n",
+				(int)cSock, _clients.size(), (int)_sock, inet_ntoa(clientAddr.sin_addr));
 		}
 		return cSock;
 	}
@@ -292,17 +309,13 @@ public:
 				printf("select < 0  error!!!\n");
 				return false;
 			}
-			static int num=0;
+			
 			if (FD_ISSET(_sock, &fdRead))
 			{
 				FD_CLR(_sock, &fdRead);
 				_cSock = Accept();
 				if (INVALID_SOCKET == _cSock) {
 					printf("accept errror!!!\n");
-				}
-				else {
-					num++;
-					printf("accept number:%d\n", num);
 				}
 			}
 
@@ -380,13 +393,19 @@ public:
 	//响应网络请求
 	virtual void OnNetMsg(SOCKET cSock, DataHeader* header)
 	{
+		_recvCount++;
+		auto t1 = _tTime.getElapsedSecond();
+		if (t1>1.0)
+		{
+			printf("time:<%lf>, 客户端数量:<%d>, recvCount:<%d>\n", t1, _clients.size(), (int)_recvCount);
+			_tTime.update();
+			_recvCount = 0;
+		}
+
 		Login* login;
 		Logout* logout;
 		LoginResult ret;
 		LogoutResult ret1;
-
-		static int num = 0;
-		//printf("OnNetMsg num:%d\n", num);
 		
 		switch (header->cmd)
 		{
@@ -395,7 +414,8 @@ public:
 			login = (Login*)header;
 			//printf("客户端:%d,收到命令:CMD_LOGIN, len:%d, username:%s, password:%s\n",
 			//	cSock, login->dataLength, login->userName, login->PassWord);
-			SendData(cSock, &ret);
+			
+			//SendData(cSock, &ret);
 			break;
 
 		case CMD_LOGOUT:
@@ -403,15 +423,16 @@ public:
 			//printf("客户端:%d,收到命令:CMD_LOGOUT, len:%d, username:%s\n",
 			//	cSock, logout->dataLength, logout->userName);
 			send(cSock, (const char*)&ret1, sizeof(LogoutResult), 0);
-			SendData(cSock, &ret1);
+			
+			//SendData(cSock, &ret1);
 			break;
+
 		default:
 			printf("<socket=%d>收到未定义消息,数据长度：%d\n", _sock, header->dataLength);
 			//DataHeader ret;
 			//SendData(cSock, &ret);
 			break;
 		}
-		num++;
 	}
 
 	//发送指定socket数据

@@ -43,7 +43,7 @@ void test1() {
 	client.Close();
 
 	printf("client已经退出\n");
-	getchar();
+	//getchar();
 }
 
 void test2() {
@@ -51,16 +51,24 @@ void test2() {
 	//linux:FD_SETSIZE 是1024
 
 	//const int cCount = FD_SETSIZE-1;
-	const int cCount = 10;//windows: -1是服务监听的fd  所以客户端最多启动63个fd
+	const int cCount = 10000;//windows: -1是服务监听的fd  所以客户端最多启动63个fd
 	EasyTcpClient* client[cCount];
 
 	for (int i = 0; i < cCount; i++)
 	{
+		if (!g_bRun)
+		{
+			return;
+		}
 		client[i] = new EasyTcpClient;
 	}
 
 	for (int i = 0; i < cCount; i++)
 	{
+		if (!g_bRun)
+		{
+			return;
+		}
 		client[i]->Connect("127.0.0.1", 4567);
 		//client[i]->Connect("65.49.211.61", 4567);
 		//client[i]->Connect("39.97.236.187", 4567);
@@ -79,7 +87,7 @@ void test2() {
 		for (int i = 0; i < cCount; i++)
 		{
 			client[i]->SendData(&login);
-			client[i]->OnRun();
+			//client[i]->OnRun();
 		}
 	}
 
@@ -89,7 +97,7 @@ void test2() {
 	}
 
 	printf("client已经退出\n");
-	getchar();
+	//getchar();
 }
 
 int main() {

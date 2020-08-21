@@ -24,11 +24,13 @@
 #ifndef _EasyTcpClient_hpp_
 #define _EasyTcpClient_hpp_
 
+
+
 #ifdef _WIN32
 	#define _CRT_SECURE_NO_WARNINGS
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 	#define WIN32_LEAN_AND_MEAN
-	#define FD_SETSIZE 1024 //windows select支持超过64个fd 定义在WinSock2.h前面
+	#define FD_SETSIZE 10024 //windows select支持超过64个fd 定义在WinSock2.h前面
 	#include<windows.h>
 	#include<WinSock2.h>
 	#pragma comment(lib,"ws2_32.lib")
@@ -40,11 +42,16 @@
 	#define INVALID_SOCKET  (SOCKET)(~0)
 	#define SOCKET_ERROR            (-1)
 #endif
-#include <stdio.h>
-#include <thread>
-#include<iostream>
 
-#include "MessageHeader.hpp"
+#include<stdio.h>
+#include<vector>
+#include<map>
+#include<thread>
+#include<mutex>
+#include<atomic>
+#include<functional>
+#include"MessageHeader.hpp"
+#include"CELLTimestamp.hpp"
 
 class EasyTcpClient
 {
