@@ -1,5 +1,9 @@
 ﻿//linux:make -f index.txt
 #include"EasyTcpServer.hpp"
+
+
+
+
 int main() {
 	EasyTcpServer server;
 	server.Bind(nullptr, 4567);
@@ -20,5 +24,5 @@ int main() {
 
 	printf("服务器已经退出\n");
 	getchar();
-	return 0;;
+	return 0;
 }
