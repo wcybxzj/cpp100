@@ -51,7 +51,7 @@ void test2() {
 	//linux:FD_SETSIZE 是1024
 
 	//const int cCount = FD_SETSIZE-1;
-	const int cCount = 10000;//windows: -1是服务监听的fd  所以客户端最多启动63个fd
+	const int cCount = 200;//windows: -1是服务监听的fd  所以客户端最多启动63个fd
 	EasyTcpClient* client[cCount];
 
 	for (int i = 0; i < cCount; i++)

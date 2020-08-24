@@ -231,7 +231,7 @@ public:
 		else 
 		{
 			NewUserJoin userJoin;
-			SendDataToAll(&userJoin);
+			//SendDataToAll(&userJoin);
 
 			_clients.push_back(new ClientSocket(cSock));
 			printf("socket=<%d>,新客户端<%d>加入：socket = %d,IP = %s \n",
