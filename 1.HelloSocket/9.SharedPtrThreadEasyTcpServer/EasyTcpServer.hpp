@@ -5,6 +5,7 @@
 #include"CELLClient.hpp"
 #include"CELLServer.hpp"
 #include"INetEvent.hpp"
+#include<memory>
 
 class EasyTcpServer : INetEvent
 {
@@ -137,13 +138,13 @@ public:
 		}
 		else 
 		{
-			addClientToCellServer(new CellClient(cSock));
-			//inet_ntoa(clientAddr.sin_addr);// client ip
+			std::shared_ptr<CellClient>cellclient = std::make_shared<CellClient>(cSock);
+			addClientToCellServer(cellclient);
 		}
 		return cSock;
 	}
 
-	void addClientToCellServer(CellClient* pClient) {
+	void addClientToCellServer(CellClientPtr& pClient) {
 		auto pMinServer = _cellServers[0];
 		//加入到客户最少的CellServer
 		for (auto pCellServer:_cellServers)
@@ -251,24 +252,24 @@ public:
 	}
 
 	//1个线程调用
-	void OnNetJoin(CellClient* pClient)
+	void OnNetJoin(CellClientPtr& pClient)
 	{
 		_clientCount++;
 	}
 
 	//4个线程调用
-	void OnNetLeave(CellClient* pClient)
+	void OnNetLeave(CellClientPtr& pClient)
 	{
 		_clientCount--;
 	}
 
 	//4个线程调用
-	void OnNetMsg(CellServer*pCellServer, CellClient* pClient, netmsg_DataHeader* header)
+	void OnNetMsg(CellServer*pCellServer, CellClientPtr& pClient, netmsg_DataHeader* header)
 	{
 		_msgCount++;
 	}
 
-	void OnNetRecv(CellClient* pClient)
+	void OnNetRecv(CellClientPtr& pClient)
 	{
 		_recvCount++;
 	}

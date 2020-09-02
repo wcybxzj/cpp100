@@ -1,4 +1,6 @@
 ﻿#include"EasyTcpClient.hpp"
+#include<iostream>
+
 //#include"CELLTimestamp.hpp"
 
 //linux:make -f index.txt
@@ -6,10 +8,11 @@
 bool g_bRun = true;
 
 //客户端总数量
-const int cCount = 10000;
+const int cCount = 1000;
 
 //线程数量
 const int tCount = 4;
+
 EasyTcpClient* client[cCount];
 //发送计数
 std::atomic_int sendCount = 0;
@@ -77,15 +80,15 @@ void sendThread(int id) {
 	readyCount++;
 	while (readyCount < tCount)
 	{
-		std::chrono::milliseconds t(10);
+		std::chrono::milliseconds t(1000);
 		std::this_thread::sleep_for(t);
 	}
 
 	std::thread t1(recvThread, begin, end);
 	t1.detach();
 
-	Login login[100];
-	for (int i = 0; i < 100; i++)
+	netmsg_Login login[1];
+	for (int i = 0; i < 1; i++)
 	{
 		strcpy(login[i].userName, "ybx");
 		strcpy(login[i].PassWord, "12345");
@@ -100,7 +103,16 @@ void sendThread(int id) {
 			{
 				sendCount++;
 			}
+			else
+			{
+				//printf("send errro\n");
+				std::chrono::milliseconds t(1000000);
+				std::this_thread::sleep_for(t);
+			}
 		}
+
+		//std::chrono::seconds t(1);
+		//std::this_thread::sleep_for(t);
 	}
 
 	for (int i = begin; i < end; i++)
@@ -112,7 +124,24 @@ void sendThread(int id) {
 	printf("thread<%d>, exit", id);
 }
 
+//定时测试
+void test1() {
+	CELLTimestamp t;
+
+	while (1)
+	{
+		if (t.getElapsedSecond()>1.0)
+		{
+			std::cout << "11111111\n" << std::endl;
+			t.update();
+		}
+	}
+}
+
+
 int main() {
+
+
 	std::thread t1(cmdThread);
 	t1.detach();
 
@@ -122,18 +151,21 @@ int main() {
 		t1.detach();
 	}
 
+	static int sendTotalCount = 0;
 	CELLTimestamp tTime;
 	while (g_bRun)
 	{
 		auto t = tTime.getElapsedSecond();
 		if (t>=1.0)
 		{
-			printf("thread<%d>, clients<%d>, time<%lf>,send package num:%d\n", 
-				tCount, cCount, t, (int)(sendCount/t));
+			sendTotalCount += sendCount;
+			printf("thread<%d>, clients<%d>, time<%lf>,send package num:<%d>,sendTotalCount:<%d>\n", 
+				tCount, cCount, t, (int)(sendCount/t), (int)(sendTotalCount));
+			
 			sendCount = 0;
 			tTime.update();
 		}
-		Sleep(1);
+		//Sleep(1);
 	}
 	printf("client已经退出\n");
 	return 0;

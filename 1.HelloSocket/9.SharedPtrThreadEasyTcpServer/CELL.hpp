@@ -50,7 +50,9 @@
 #include<mutex>
 #include<atomic>
 #include<functional>
+#include<memory>
 
+#include "Alloctor.h"
 #include"MessageHeader.hpp"
 #include"CELLTimestamp.hpp"
 #include"CELLTask.hpp"
@@ -60,5 +62,8 @@
 #define RECV_BUFF_SIZE 10240 //10KB
 #define SEND_BUFF_SIZE 10240 //10KB
 #endif // !RECV_BUFF_SIZE
+
+
+
 
 #endif

@@ -1,4 +1,5 @@
 ﻿//linux:make -f index.txt
+#include"Alloctor.h"
 #include"EasyTcpServer.hpp"
 
 bool g_bRun = true;

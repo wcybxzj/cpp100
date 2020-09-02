@@ -149,8 +149,8 @@ public:
 			FD_SET(_sock, &fdReads);
 			timeval t = { 1,0 };
 			select_count++;
-			//int select_ret = select(_sock + 1, &fdReads, 0, 0, NULL);
-			int select_ret = select(_sock + 1, &fdReads, 0, 0, &t);
+			int select_ret = select(_sock + 1, &fdReads, 0, 0, NULL);
+			//int select_ret = select(_sock + 1, &fdReads, 0, 0, &t);
 			//printf("select_count:%d, select_ret:%d\n", select_count, select_ret);
 
 			if (select_ret < 0)
@@ -202,9 +202,9 @@ public:
 			return -1;
 		}
 		_lastPos += nLen;
-		while (_lastPos >= sizeof(DataHeader))
+		while (_lastPos >= sizeof(netmsg_DataHeader))
 		{
-			DataHeader* header = (DataHeader*)_szMsgBuf;
+			netmsg_DataHeader* header = (netmsg_DataHeader*)_szMsgBuf;
 			if (_lastPos >= header->dataLength)
 			{
 				int nSize = _lastPos - header->dataLength;
@@ -222,7 +222,7 @@ public:
 
 
 	//响应网络消息
-	virtual void OnNetMsg(DataHeader* header)
+	virtual void OnNetMsg(netmsg_DataHeader* header)
 	{
 		static int num = 0;
 		//printf("OnNetMsg num:%d\n", num);
@@ -232,19 +232,19 @@ public:
 		case CMD_LOGIN_RESULT:
 		{
 
-			LoginResult* login = (LoginResult*)header;
-			//printf("<socket=%d>收到服务端消息：CMD_LOGIN_RESULT,数据长度：%d\n", _sock, login->dataLength);
+			netmsg_LoginR* login = (netmsg_LoginR*)header;
+			printf("<socket=%d>收到服务端消息：CMD_LOGIN_RESULT,数据长度：%d\n", _sock, login->dataLength);
 		}
 		break;
 		case CMD_LOGOUT_RESULT:
 		{
-			LogoutResult* logout = (LogoutResult*)header;
+			netmsg_LogoutR* logout = (netmsg_LogoutR*)header;
 			//printf("<socket=%d>收到服务端消息：CMD_LOGOUT_RESULT,数据长度：%d\n", _sock, logout->dataLength);
 		}
 		break;
 		case CMD_NEW_USER_JOIN:
 		{
-			NewUserJoin* userJoin = (NewUserJoin*)header;
+			netmsg_NewUserJoin* userJoin = (netmsg_NewUserJoin*)header;
 			//printf("<socket=%d>收到服务端消息：CMD_NEW_USER_JOIN,数据长度：%d\n", _sock, userJoin->dataLength);
 		}
 		break;
@@ -262,7 +262,7 @@ public:
 	}
 
 	//发送数据
-	int SendData(DataHeader* header, int nLen)
+	int SendData(netmsg_DataHeader* header, int nLen)
 	{
 		int ret = SOCKET_ERROR;
 		if (isRun() && header)
@@ -276,6 +276,8 @@ public:
 		}
 		return ret;
 	}
+
+
 private:
 
 };

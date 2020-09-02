@@ -239,11 +239,18 @@ public:
 	//响应网络请求
 	virtual void time4msg()
 	{
+		static int  msgTotalCount=0;
+		static int  recvTotalCount=0;
+
+		msgTotalCount += _msgCount;
+		recvTotalCount += _recvCount;
+
 		auto t1 = _tTime.getElapsedSecond();
 		if (t1 >= 1.0)
 		{
-			printf("thread<%d>,time<%lf>,socket<%d>,clients<%d>,recv<%d>,msg<%d>\n",
-				(int)_cellServers.size(), t1, _sock, (int)_clientCount, (int)(_recvCount / t1), (int)(_msgCount / t1));
+			printf("thread<%d>,time<%lf>,socket<%d>,clients<%d>,recv 次数:<%d>,send package num:<%d>, recvTotalCount:<%d> msgTotalCount:<%d>\n",
+				(int)_cellServers.size(), t1, _sock, (int)_clientCount, (int)(_recvCount / t1), (int)(_msgCount / t1), recvTotalCount, msgTotalCount);
+
 			_msgCount = 0;
 			_recvCount = 0;
 			_tTime.update();

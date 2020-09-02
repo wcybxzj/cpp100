@@ -47,6 +47,7 @@ struct netmsg_LoginR : public netmsg_DataHeader
 	char data[92];
 };
 
+
 struct netmsg_Logout : public netmsg_DataHeader
 {
 	netmsg_Logout()
@@ -78,5 +79,15 @@ struct netmsg_NewUserJoin : public netmsg_DataHeader
 	}
 	int scok;
 };
+
+
+
+
+//int a1 = sizeof(netmsg_DataHeader);
+//int a2 = sizeof(netmsg_Login);
+//int a3 = sizeof(netmsg_LoginR);
+//int a4 = sizeof(netmsg_Logout);
+//int a5 = sizeof(netmsg_LogoutR);
+//int a6 = sizeof(netmsg_NewUserJoin);
 
 #endif // !_MessageHeader_hpp_

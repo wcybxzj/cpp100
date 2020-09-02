@@ -78,5 +78,6 @@ struct netmsg_NewUserJoin : public netmsg_DataHeader
 	}
 	int scok;
 };
-
+typedef std::shared_ptr<netmsg_DataHeader> netmsg_DataHeaderPtr;
+typedef std::shared_ptr<netmsg_LoginR> netmsg_LoginRPtr;
 #endif // !_MessageHeader_hpp_

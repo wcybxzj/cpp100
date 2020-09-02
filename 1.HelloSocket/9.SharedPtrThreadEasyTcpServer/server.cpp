@@ -26,26 +26,26 @@ class MyServer : public EasyTcpServer
 public:
 
 	//只会被一个线程触发 安全
-	virtual void OnNetJoin(CellClient* pClient)
+	virtual void OnNetJoin(CellClientPtr& pClient)
 	{
 		EasyTcpServer::OnNetJoin(pClient);
 	}
 
 	//cellServer 4 多个线程触发 不安全
 	//如果只开启1个cellServer就是安全的
-	virtual void OnNetLeave(CellClient* pClient)
+	virtual void OnNetLeave(CellClientPtr& pClient)
 	{
 		EasyTcpServer::OnNetLeave(pClient);
 	}
 
-	virtual void OnNetMsg(CellServer *pCellServer, CellClient* pClient, netmsg_DataHeader* header)
+	virtual void OnNetMsg(CellServer *pCellServer, CellClientPtr& pClient, netmsg_DataHeader* header)
 	{
 		EasyTcpServer::OnNetMsg(pCellServer, pClient, header);
 
 		netmsg_Login* login;
 		netmsg_Logout* logout;
-		netmsg_LoginR ret;
-		netmsg_LogoutR ret1;
+		//netmsg_LoginR ret;
+
 
 		switch (header->cmd)
 		{
@@ -57,12 +57,16 @@ public:
 			//	cSock, login->dataLength, login->userName, login->PassWord);
 
 			//pClient->SendData(&ret);
-			netmsg_LoginR* ret = new netmsg_LoginR();
-			pCellServer->addSendTask(pClient, ret);
+
+			
+			netmsg_LoginRPtr ret = std::make_shared<netmsg_LoginR>();
+			netmsg_DataHeaderPtr ret1 = std::static_pointer_cast<netmsg_DataHeader>(ret);
+			pCellServer->addSendTask(pClient, ret1);
 			break;
 		}
 		case CMD_LOGOUT:
 		{
+			netmsg_LogoutR ret1;
 			logout = (netmsg_Logout*)header;
 			//printf("客户端:%d,收到命令:CMD_LOGOUT, len:%d, username:%s\n",
 			//	cSock, logout->dataLength, logout->userName);
