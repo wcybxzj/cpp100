@@ -233,7 +233,7 @@ public:
 		{
 
 			netmsg_LoginR* login = (netmsg_LoginR*)header;
-			printf("<socket=%d>收到服务端消息：CMD_LOGIN_RESULT,数据长度：%d\n", _sock, login->dataLength);
+			//printf("<socket=%d>收到服务端消息：CMD_LOGIN_RESULT,数据长度：%d\n", _sock, login->dataLength);
 		}
 		break;
 		case CMD_LOGOUT_RESULT:

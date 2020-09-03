@@ -146,9 +146,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Alloctor.h" />
     <ClInclude Include="CELL.hpp" />
     <ClInclude Include="CELLClient.hpp" />
+    <ClInclude Include="CELLObjectPool.hpp" />
     <ClInclude Include="CELLServer.hpp" />
     <ClInclude Include="CELLTask.hpp" />
     <ClInclude Include="CELLTimestamp.hpp" />
@@ -161,7 +161,7 @@
     <Text Include="index.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Alloctor.cpp" />
+    <ClCompile Include="Alloctor.hpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

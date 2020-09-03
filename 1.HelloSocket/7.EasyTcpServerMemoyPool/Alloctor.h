@@ -2,7 +2,7 @@
 #define _ALLOCTOR_H_
 
 void* operator new(size_t size);
-void operator delete(void *p);
+void operator delete(void* p);
 
 void* operator new[](size_t size);
 void operator delete[](void* p);

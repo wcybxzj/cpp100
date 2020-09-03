@@ -3,8 +3,9 @@
 #include<stdlib.h>
 #include<assert.h>
 #include<mutex>
+#include"Alloctor.h"
 
-#define DEBUG_MEMORY_POOL
+//#define DEBUG_MEMORY_POOL
 
 #ifdef DEBUG_MEMORY_POOL
 	#ifndef xPrintf

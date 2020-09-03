@@ -141,9 +141,9 @@ public:
 
 	void freeMemory(void* pMem)
 	{
-		xPrintf("memory pool:freeMemory:%llx\n", pMem);
 		MemoryBlock* pBlock = 
 				(MemoryBlock*)((char *)pMem - sizeof(MemoryBlock));
+		xPrintf("memory pool:freeMemory:%llx\n", pBlock);
 
 		assert(1 == pBlock->nRef);
 		
@@ -228,7 +228,7 @@ public:
 
 	void* allocMem(int nSize)
 	{
-		xPrintf("MemoryMgr()->allocMem: nSize:%d\n", nSize);
+		//xPrintf("MemoryMgr()->allocMem: nSize:%d\n", nSize);
 
 		if (nSize <= MAX_MEMORY_SIZE)
 		{
@@ -261,7 +261,7 @@ public:
 				free(pBlock);
 			}
 		}
-		printf("MemoryMgr()->freeMem(): address:%x\n", pMem);
+		//printf("MemoryMgr()->freeMem(): address:%x\n", pMem);
 	}
 
 	void addRef(void* pMem)

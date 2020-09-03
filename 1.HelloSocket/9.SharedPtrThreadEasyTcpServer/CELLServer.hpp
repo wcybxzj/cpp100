@@ -171,7 +171,7 @@ public:
 			}
 
 #else
-			std::vector<ClientSocket*> temp;
+			std::vector<CellClientPtr> temp;
 			for (auto iter : _clients)
 			{
 				if (FD_ISSET(iter.second->sockfd(), &fdRead))
@@ -188,7 +188,6 @@ public:
 			for (auto pClient : temp)
 			{
 				_clients.erase(pClient->sockfd());
-				delete pClient;
 			}
 #endif
 

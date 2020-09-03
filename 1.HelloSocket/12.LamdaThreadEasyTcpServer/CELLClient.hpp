@@ -2,9 +2,7 @@
 #define _CellClient_hpp_
 
 #include "CELL.hpp"
-#include "CELLObjectPool.hpp"
-
-class CellClient:public ObjectPoolBase<CellClient,10000>
+class CellClient
 {
 private:
 	SOCKET _sockfd;
@@ -53,11 +51,11 @@ public:
 
 	//发送指定socket数据
 	//多个package合并到一起一次发送避免send调用次数过多
-	int SendData(netmsg_DataHeaderPtr& header)
+	int SendData(netmsg_DataHeader* header)
 	{
 		int ret = SOCKET_ERROR;
 		int nSendLen = header->dataLength;
-		const char* pSendData = (const char*)header.get();
+		const char* pSendData = (const char*)header;
 
 		while (true)
 		{
@@ -87,5 +85,4 @@ public:
 		return ret;
 	}
 };
-typedef std::shared_ptr<CellClient> CellClientPtr;
 #endif

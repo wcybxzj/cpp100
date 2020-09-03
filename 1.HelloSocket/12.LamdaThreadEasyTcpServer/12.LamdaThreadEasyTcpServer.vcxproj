@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{C36B97C8-F2F4-4A7F-A33B-BB45B0738F94}</ProjectGuid>
-    <RootNamespace>My10ObjPool</RootNamespace>
+    <ProjectGuid>{C47DC177-D6E3-4C29-9ECB-4E74D668ED83}</ProjectGuid>
+    <RootNamespace>My12LamdaThreadEasyTcpServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,13 +146,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Alloctor.hpp" />
-    <ClCompile Include="CELLObjectPool.hpp" />
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="CELL.hpp" />
+    <ClInclude Include="CELLClient.hpp" />
+    <ClInclude Include="CELLServer.hpp" />
+    <ClInclude Include="CELLTask.hpp" />
+    <ClInclude Include="CELLTimestamp.hpp" />
+    <ClInclude Include="EasyTcpServer.hpp" />
+    <ClInclude Include="INetEvent.hpp" />
+    <ClInclude Include="MessageHeader.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CELLTimestamp.hpp" />
-    <ClInclude Include="MemoryMgr.hpp" />
+    <Text Include="index.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="server.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

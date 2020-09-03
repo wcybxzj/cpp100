@@ -5,40 +5,20 @@
 #include<mutex>
 #include<list>
 #include<functional>
-#include "CELL.hpp"
-
-class CellTask
-{
-public:
-	CellTask()
-	{
-	}
-
-	virtual ~CellTask()
-	{
-
-	}
-
-	virtual void doTask()
-	{
-
-	}
-
-private:
-
-};
-
-typedef std::shared_ptr<CellTask> CellTaskPtr;
 
 class CellTaskServer 
 {
+	//使用lamda做匿名函数做为每一个任务，之前需要接口+对象传入的对象指针
+	//类型名是CellTask 类型值是void()
+	typedef std::function<void()> CellTask;
+
 private:
-	std::list<CellTaskPtr> _tasks;
-	std::list<CellTaskPtr> _tasksBuf;
+	std::list<CellTask> _tasks;
+	std::list<CellTask> _tasksBuf;
 	std::mutex _mutex;
 
 public:
-	void addTask(CellTaskPtr task)
+	void addTask(CellTask task)
 	{
 		std::lock_guard<std::mutex>lock(_mutex);
 		_tasksBuf.push_back(task);
@@ -75,7 +55,7 @@ protected:
 
 			for (auto pTask:_tasks)
 			{
-				pTask->doTask();
+				pTask();
 			}
 			_tasks.clear();
 		}
@@ -85,5 +65,14 @@ protected:
 
 	}
 };
+
+
+
+
+
+
+
+
+
 
 #endif

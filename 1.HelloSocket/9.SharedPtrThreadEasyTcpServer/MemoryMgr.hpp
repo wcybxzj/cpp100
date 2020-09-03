@@ -5,10 +5,10 @@
 #include<mutex>
 #include<iostream>
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
-#include<stdlib.h>
+	#include<stdlib.h>
 	#define xPrintf(...) printf(__VA_ARGS__)
 #else
 	#define xPrintf(...)
@@ -60,7 +60,7 @@ public:
 		_pHeader = nullptr;
 		_nSize = 0;
 		_nBlockSize = 0;
-		xPrintf("MemoryAlloc\n");
+		xPrintf("memory pool:MemoryAlloc\n");
 	}
 
 	~MemoryAlloc()
@@ -73,7 +73,7 @@ public:
 
 	void initMemory()
 	{
-		xPrintf("initMemory _nSize:%d, _nBlockSize:%d\n",
+		xPrintf("memory pool:initMemory _nSize:%d, _nBlockSize:%d\n",
 			_nSize, _nBlockSize);
 
 		assert(nullptr == _pBuf);
@@ -137,7 +137,7 @@ public:
 			pReturn->nRef = 1;
 		}
 
-		xPrintf("allocMemory:%llx  id:%d, size:%d\n",pReturn, pReturn->nID, nSize);
+		xPrintf("memory pool:allocMemory:%llx  id:%d, size:%d\n",pReturn, pReturn->nID, nSize);
 		return (((char*)pReturn) + sizeof(MemoryBlock));
 	}
 
@@ -175,6 +175,7 @@ class MemoryAlloctor :public MemoryAlloc
 {
 public:
 	MemoryAlloctor() {
+
 		//当前平台指针大小
 		const int n = sizeof(void*);
 		//每个内存块要按照指针大小的倍数生成

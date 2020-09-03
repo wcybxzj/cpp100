@@ -1,4 +1,6 @@
-#include "Alloctor.h"
+#ifndef _WIN32
+	#include "Alloctor.hpp"
+#endif // _WIN32
 #include<stdlib.h>
 #include<iostream>
 #include<thread>
@@ -18,12 +20,12 @@ public:
 	{
 		num = n;
 		
-		//printf("init ClassA\n");
+		printf("init ClassA\n");
 	}
 
 	~ClassA()
 	{
-		//printf("~ ClassA\n");
+		printf("~ ClassA\n");
 	}
 };
 
@@ -95,11 +97,39 @@ void test2()
 	cout << "Hello,main thread." << endl;
 }
 
+void test3()
+{
+	{
+		//目的:初始化内存池,避免后面调试信息的干扰
+		ClassA* b1 = new ClassA(0);
+		delete b1;
+	}
+	printf("------------------1---------------------\n");
+	{
+		//问题:
+		//这里共享指针,无法使用对象池,可以使用内存池
+		//因为共享指针new对象时候不是简单的ClassA
+		shared_ptr<ClassA>s1 = make_shared<ClassA>(5);
+	}
+	printf("------------------2---------------------\n");
+	{
+		//解决办法:
+		//使用对象池,使用内存池
+		shared_ptr<ClassA>s1(new ClassA(5));
+	}
+	printf("------------------3---------------------\n");
+	{
+		ClassA* a1 = new ClassA(5);
+		delete a1;
+	}
+}
+
 
 int main()
 {
 	//test1();
-	test2();
+	//test2();
+	test3();
 }
 
 

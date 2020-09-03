@@ -5,28 +5,6 @@
 #include "CELLClient.hpp"
 #include "INetEvent.hpp"
 
-
-class CellSendMsg2ClientTask :public CellTask
-{
-private:
-	CellClient* _pClient;
-	netmsg_DataHeader* _pHeader;
-
-public:
-	CellSendMsg2ClientTask(CellClient* pClient,
-		netmsg_DataHeader* header)
-	{
-		_pClient = pClient;
-		_pHeader = header;
-	}
-
-	void doTask() {
-		_pClient->SendData(_pHeader);
-		delete _pHeader;
-	}
-
-};
-
 class CellServer {
 public:
 	CellServer(SOCKET sock = INVALID_SOCKET)
@@ -235,8 +213,10 @@ public:
 	}
 
 	void addSendTask(CellClient* pClient, netmsg_DataHeader* header) {
-		CellSendMsg2ClientTask* task = new CellSendMsg2ClientTask(pClient, header);
-		_taskServer.addTask(task);
+		_taskServer.addTask([pClient, header]() {
+			pClient->SendData(header);
+			delete header;
+		});
 	}
 
 	void Start() {

@@ -8,7 +8,7 @@
 bool g_bRun = true;
 
 //客户端总数量
-const int cCount = 1000;
+const int cCount = 100;
 
 //线程数量
 const int tCount = 4;

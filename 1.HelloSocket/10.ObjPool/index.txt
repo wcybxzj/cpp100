@@ -1,0 +1,17 @@
+SRC:=$(wildcard ./*.cpp)
+OBJS:=$(patsubst %.cpp, %.o, $(SRC))
+GCC:=g++
+INC:=./
+
+TARGET:=main
+
+all:$(TARGET)
+$(TARGET):main.o
+	$(GCC) $^ -I$(INC) -pthread -std=c++11 -o $@
+
+%.o:%.cpp
+	$(GCC) -I$(INC)  -pthread -std=c++11  -c $< -o $@
+
+.PHONY:clean
+clean:
+	$(RM) $(OBJS) $(TARGET)

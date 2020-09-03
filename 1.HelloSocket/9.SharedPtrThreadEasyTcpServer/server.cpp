@@ -1,4 +1,7 @@
 ﻿//linux:make -f index.txt
+#ifndef _WIN32
+	#include "Alloctor.hpp"
+#endif // _WIN32
 #include"EasyTcpServer.hpp"
 
 bool g_bRun = true;
