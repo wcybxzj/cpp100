@@ -68,10 +68,10 @@ void sendThread(int id) {
 		{
 			return;
 		}
-		client[i]->Connect("127.0.0.1", 4567);
-		//client[i]->Connect("65.49.211.61", 4567);
-		//client[i]->Connect("39.97.236.187", 4567);
-		//client[i]->Connect("192.168.204.132", 4567);
+		//client[i]->Connect("127.0.0.1", 4567);
+		//client[i]->Connect("65.49.211.61", 4567);//banwa
+		//client[i]->Connect("39.97.236.187", 4567);//aliyun
+		client[i]->Connect("192.168.204.132", 4567);//ubuntu
 	}
 
 	printf("thread<%d>, connect fd range<begin:%d, end:%d>", id, begin, end);

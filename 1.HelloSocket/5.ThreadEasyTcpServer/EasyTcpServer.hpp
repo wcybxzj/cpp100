@@ -32,6 +32,7 @@ public:
 
 	virtual ~EasyTcpServer()
 	{
+		printf("~EasyTcpServer()\n");
 		Close();
 	}
 

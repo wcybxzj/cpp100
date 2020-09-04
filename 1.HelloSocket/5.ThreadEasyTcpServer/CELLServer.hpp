@@ -37,6 +37,7 @@ public:
 
 	~CellServer()
 	{
+		printf("~CellServer()\n");
 		Close();
 		_sock = INVALID_SOCKET;
 	}
@@ -53,13 +54,13 @@ public:
 #ifdef _WIN32
 			for (int n = (int)_clients.size() - 1; n >= 0; n--)
 			{
-				closesocket(_clients[n]->sockfd());
+				//closesocket(_clients[n]->sockfd());
 				delete _clients[n];
 			}
 #else
 			for (int n = (int)_clients.size() - 1; n >= 0; n--)
 			{
-				close(_clients[n]->sockfd());
+				//close(_clients[n]->sockfd());
 				delete _clients[n];
 			}
 #endif
@@ -159,7 +160,6 @@ public:
 					printf("error. if (iter == _clients.end())\n");
 				}
 			}
-
 #else
 			std::vector<CellClient*> temp;
 			for (auto iter : _clients)
@@ -168,9 +168,10 @@ public:
 				{
 					if (-1 == RecvData(iter.second))
 					{
+						printf("RecvData -1\n");
 						if (_pNetEvent)
 							_pNetEvent->OnNetLeave(iter.second);
-						_clients_change = false;
+						_clients_change = true;
 						temp.push_back(iter.second);
 					}
 				}
@@ -196,6 +197,7 @@ public:
 
 		if (nLen <= 0)
 		{
+			printf("recv() return -1\n");
 			return -1;
 		}
 
