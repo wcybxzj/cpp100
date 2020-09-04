@@ -87,6 +87,10 @@ private:
 
 
 int main() {
+#ifndef _WIN32
+	signal(SIGPIPE, SIG_IGN);
+#endif
+
 	MyServer server;
 	server.InitSocket();
 	server.Bind(nullptr, 4567);

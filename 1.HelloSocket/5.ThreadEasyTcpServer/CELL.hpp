@@ -35,6 +35,7 @@
 #include <ws2tcpip.h>
 #pragma comment(lib,"ws2_32.lib")
 #else
+#include<signal.h>
 #include<unistd.h> //uni std
 #include<arpa/inet.h>
 #include<string.h>
