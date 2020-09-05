@@ -1,4 +1,4 @@
-#if 1
+#if 0
 #define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
 #include<ctime>
@@ -27,7 +27,7 @@
 #include <mutex>
 
 using namespace std;
-
+//±‰≤Œ≤‚ ‘:
 
 template <typename T>
 void printValue(const T& t)

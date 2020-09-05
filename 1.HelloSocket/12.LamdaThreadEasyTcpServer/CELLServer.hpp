@@ -31,13 +31,13 @@ public:
 #ifdef _WIN32
 			for (int n = (int)_clients.size() - 1; n >= 0; n--)
 			{
-				closesocket(_clients[n]->sockfd());
+				//closesocket(_clients[n]->sockfd());
 				delete _clients[n];
 			}
 #else
 			for (int n = (int)_clients.size() - 1; n >= 0; n--)
 			{
-				close(_clients[n]->sockfd());
+				//close(_clients[n]->sockfd());
 				delete _clients[n];
 			}
 #endif
@@ -148,7 +148,7 @@ public:
 					{
 						if (_pNetEvent)
 							_pNetEvent->OnNetLeave(iter.second);
-						_clients_change = false;
+						_clients_change = true;
 						temp.push_back(iter.second);
 					}
 				}

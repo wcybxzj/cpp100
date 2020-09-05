@@ -87,6 +87,21 @@ private:
 
 
 int main() {
+
+#ifndef _WIN32
+	signal(SIGPIPE, SIG_IGN);
+#endif
+
+#ifndef WIN32
+	sigset_t signal_mask;
+	sigemptyset(&signal_mask);
+	sigaddset(&signal_mask, SIGPIPE);
+	int rc = pthread_sigmask(SIG_BLOCK, &signal_mask, NULL);
+	if (rc != 0) {
+		printf("block sigpipe error\n");
+	}
+#endif 
+
 	MyServer server;
 	server.InitSocket();
 	server.Bind(nullptr, 4567);

@@ -233,19 +233,19 @@ public:
 		{
 
 			netmsg_LoginR* login = (netmsg_LoginR*)header;
-			//printf("<socket=%d>收到服务端消息：CMD_LOGIN_RESULT,数据长度：%d\n", _sock, login->dataLength);
+			printf("<socket=%d>收到服务端消息：CMD_LOGIN_RESULT,数据长度：%d\n", _sock, login->dataLength);
 		}
 		break;
 		case CMD_LOGOUT_RESULT:
 		{
 			netmsg_LogoutR* logout = (netmsg_LogoutR*)header;
-			//printf("<socket=%d>收到服务端消息：CMD_LOGOUT_RESULT,数据长度：%d\n", _sock, logout->dataLength);
+			printf("<socket=%d>收到服务端消息：CMD_LOGOUT_RESULT,数据长度：%d\n", _sock, logout->dataLength);
 		}
 		break;
 		case CMD_NEW_USER_JOIN:
 		{
 			netmsg_NewUserJoin* userJoin = (netmsg_NewUserJoin*)header;
-			//printf("<socket=%d>收到服务端消息：CMD_NEW_USER_JOIN,数据长度：%d\n", _sock, userJoin->dataLength);
+			printf("<socket=%d>收到服务端消息：CMD_NEW_USER_JOIN,数据长度：%d\n", _sock, userJoin->dataLength);
 		}
 		break;
 		case CMD_ERROR:

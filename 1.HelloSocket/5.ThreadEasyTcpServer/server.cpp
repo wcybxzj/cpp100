@@ -44,8 +44,8 @@ public:
 
 		netmsg_Login* login;
 		netmsg_Logout* logout;
-		netmsg_LoginR ret;
-		netmsg_LogoutR ret1;
+		//netmsg_LoginR ret;
+		//netmsg_LogoutR ret1;
 
 		switch (header->cmd)
 		{
@@ -58,7 +58,7 @@ public:
 
 			//pClient->SendData(&ret);
 			netmsg_LoginR* ret = new netmsg_LoginR();
-			pCellServer->addSendTask(pClient, ret);
+			//pCellServer->addSendTask(pClient, ret);
 			break;
 		}
 		case CMD_LOGOUT:
@@ -66,7 +66,8 @@ public:
 			logout = (netmsg_Logout*)header;
 			//printf("客户端:%d,收到命令:CMD_LOGOUT, len:%d, username:%s\n",
 			//	cSock, logout->dataLength, logout->userName);
-			send(pClient->sockfd(), (const char*)&ret1, sizeof(netmsg_LogoutR), 0);
+			
+			//send(pClient->sockfd(), (const char*)&ret1, sizeof(netmsg_LogoutR), 0);
 
 			//SendData(cSock, &ret1);
 			break;
@@ -90,6 +91,16 @@ int main() {
 #ifndef _WIN32
 	signal(SIGPIPE, SIG_IGN);
 #endif
+
+#ifndef WIN32
+	sigset_t signal_mask;
+	sigemptyset(&signal_mask);
+	sigaddset(&signal_mask, SIGPIPE);
+	int rc = pthread_sigmask(SIG_BLOCK, &signal_mask, NULL);
+	if (rc != 0) {
+		printf("block sigpipe error\n");
+	}
+#endif   
 
 	MyServer server;
 	server.InitSocket();
