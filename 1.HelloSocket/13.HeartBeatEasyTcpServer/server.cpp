@@ -44,21 +44,24 @@ public:
 
 		netmsg_Login* login;
 		netmsg_Logout* logout;
-		netmsg_LoginR ret;
+		
 		netmsg_LogoutR ret1;
 
 		switch (header->cmd)
 		{
 		case CMD_LOGIN:
 		{
+			//pClient->resetDTHeart();
 			//继续将body部分读入到szRecv
 			login = (netmsg_Login*)header;
 			//printf("客户端:%d,收到命令:CMD_LOGIN, len:%d, username:%s, password:%s\n",
 			//	cSock, login->dataLength, login->userName, login->PassWord);
+			
+			netmsg_LoginR ret;
+			pClient->SendData(&ret);
 
-			//pClient->SendData(&ret);
-			netmsg_LoginR* ret = new netmsg_LoginR();
-			pCellServer->addSendTask(pClient, ret);
+			//netmsg_LoginR* ret = new netmsg_LoginR();
+			//pCellServer->addSendTask(pClient, ret);
 			break;
 		}
 		case CMD_LOGOUT:
@@ -70,6 +73,12 @@ public:
 
 			//SendData(cSock, &ret1);
 			break;
+		}
+		case CMD_C2S_HEART:
+		{
+			pClient->resetDTHeart();
+			netmsg_c2s_Heart ret;
+			pClient->SendData(&ret);
 		}
 		default:
 		{
@@ -89,11 +98,10 @@ private:
 int main() {
 
 #ifndef _WIN32
-	printf("linux signgl signal(SIGPIPE, SIG_IGN);");
 	signal(SIGPIPE, SIG_IGN);
 #endif
 
-#ifndef _WIN32
+#ifndef WIN32
 	sigset_t signal_mask;
 	sigemptyset(&signal_mask);
 	sigaddset(&signal_mask, SIGPIPE);

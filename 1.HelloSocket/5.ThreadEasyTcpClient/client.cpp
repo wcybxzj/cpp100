@@ -8,10 +8,10 @@
 bool g_bRun = true;
 
 //客户端总数量
-const int cCount = 100;
+const int cCount = 10;
 
 //线程数量
-const int tCount = 4;
+const int tCount = 2;
 
 EasyTcpClient* client[cCount];
 //发送计数

@@ -29,13 +29,10 @@
 using namespace std::chrono;
 
 
-
-
-
-int main()
+void test1()
 {
     auto t1 = std::chrono::high_resolution_clock::now();
-    
+
     auto t2 = std::chrono::high_resolution_clock::now();
 
     // floating-point duration: no duration_cast needed
@@ -51,6 +48,65 @@ int main()
     std::cout << "f() took " << fp_ms.count() << " ms, "
         << "or " << int_ms.count() << " whole milliseconds "
         << "(which is " << int_usec.count() << " whole microseconds)" << std::endl;
+
+
+}
+
+void test2()
+{
+    //0 1 2 3 4
+    for (int i = 0; i < 10; i++)
+    {
+        if (i == 5)
+        {
+            break;
+        }
+        std::cout << i<< " ";
+    }
+    std::cout <<"============="<< std::endl;
+
+    //0 1 2 3 4
+    for (int i = 0; i < 10;)
+    {
+        if (i == 5)
+        {
+            break;
+        }
+        std::cout << i << " ";
+        i++;
+    }
+
+    std::cout << "=============" << std::endl;
+
+    //0 1 2 3 4 6 7 8 9
+    for (int i = 0; i < 10; i++)
+    {
+        if (i==5)
+        {
+            continue;
+        }
+        std::cout << i << " ";
+    }
+
+    std::cout << "=============" << std::endl;
+
+    //0 1 2 3 4
+    for (int i = 0; i < 10; )
+    {
+        if (i == 5)
+        {
+            printf("ËÀÑ­»·\n");
+            continue;
+        }
+        std::cout << i << " ";
+        i++;
+    }
+
+}
+
+int main()
+{
+    test2();
 }
 
 

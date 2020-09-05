@@ -1,4 +1,4 @@
-#ifndef _CELL_SERVER_HPP_
+ï»¿#ifndef _CELL_SERVER_HPP_
 #define _CELL_SERVER_HPP_
 
 #include "CELL.hpp"
@@ -24,7 +24,7 @@ public:
 		_pNetEvent = event;
 	}
 
-	//¹Ø±Õsocket
+	//å…³é—­socket
 	void Close() {
 		if (_sock != INVALID_SOCKET)
 		{
@@ -45,7 +45,7 @@ public:
 		}
 	}
 
-	//ÊÇ·ñ¹¤×÷ÖĞ
+	//æ˜¯å¦å·¥ä½œä¸­
 	bool isRun()
 	{
 		return _sock != INVALID_SOCKET;
@@ -54,8 +54,7 @@ public:
 	fd_set _fdRead_bak;
 	bool _clients_change;
 	SOCKET _maxSock;
-
-	//´¦ÀíÍøÂçÇëÇó
+	//å¤„ç†ç½‘ç»œè¯·æ±‚
 	bool OnRun() {
 		_clients_change = true;
 		while (isRun())
@@ -71,21 +70,23 @@ public:
 				_clients_change = true;
 			}
 
-			//Èç¹ûÃ»ÓĞĞèÒª´¦ÀíµÄ¿Í»§¶Ë£¬¾ÍÌø¹ı
+			//å¦‚æœæ²¡æœ‰éœ€è¦å¤„ç†çš„å®¢æˆ·ç«¯ï¼Œå°±è·³è¿‡
 			if (_clients.empty())
 			{
 				std::chrono::milliseconds t(1);
 				std::this_thread::sleep_for(t);
+				//å¿…é¡»
+				_oldTime = CELLTime::getNowInMilliSec();
 				continue;
 			}
 
 			fd_set fdRead;
 			FD_ZERO(&fdRead);
 
-			//ÓÅ»¯1:¼õÉÙFS_SET´ÎÊı
+			//ä¼˜åŒ–1:å‡å°‘FS_SETæ¬¡æ•°
 			if (_clients_change)
 			{
-				//½«ÃèÊö·û£¨socket£©¼ÓÈë¼¯ºÏ
+				//å°†æè¿°ç¬¦ï¼ˆsocketï¼‰åŠ å…¥é›†åˆ
 				_maxSock = _clients.begin()->second->sockfd();
 				for (auto iter : _clients)
 				{
@@ -104,8 +105,8 @@ public:
 
 			//printf("before:_clients.size:%d, fdRead.fd_count:%d\n", _clients.size(), fdRead.fd_count);
 
-			timeval t1 = { 0,0 };
-			int ret = select(_maxSock + 1, &fdRead, nullptr, nullptr, nullptr);//×èÈû
+			timeval t = { 0,1 };
+			int ret = select(_maxSock + 1, &fdRead, nullptr, nullptr, &t);//é˜»å¡
 
 			if (ret < 0)
 			{
@@ -113,58 +114,87 @@ public:
 				printf("CellServer() select < 0  error!!!\n");
 				return false;
 			}
-			else if (ret == 0)
-			{
-				continue;
-			}
 
-			//ÓÅ»¯2:_clients´Óvector»»³Émap,·ÅÆúFD_ISETÈ¥ÅĞ¶ÏfdÊÇ·ñÓĞÊÂ¼ş
-#ifdef _WIN32
-			for (int n = 0; n < fdRead.fd_count; n++)
-			{
-				auto iter = _clients.find(fdRead.fd_array[n]);
-				if (iter != _clients.end())
-				{
-					if (-1 == RecvData(iter->second))
-					{
-						if (_pNetEvent)
-							_pNetEvent->OnNetLeave(iter->second);
-						_clients_change = true;
-						_clients.erase(iter->first);
-					}
-				}
-				else {
-					printf("error. if (iter == _clients.end())\n");
-				}
-			}
-#else
-			std::vector<CellClient*> temp;
-			for (auto iter : _clients)
-			{
-				if (FD_ISSET(iter.second->sockfd(), &fdRead))
-				{
-					if (-1 == RecvData(iter.second))
-					{
-						if (_pNetEvent)
-							_pNetEvent->OnNetLeave(iter.second);
-						_clients_change = true;
-						temp.push_back(iter.second);
-					}
-				}
-			}
-			for (auto pClient : temp)
-			{
-				_clients.erase(pClient->sockfd());
-				delete pClient;
-			}
-#endif
-
-
-			//printf("¿ÕÏĞÊ±¼ä´¦ÀíÆäËüÒµÎñ..\n");
+			RecvData(fdRead);
+			CheckTime();
 		}
 	}
 
-	//½ÓÊÜÊı¾İ ´¦ÀíÕ³°ü ²ğ·Ö°ü
+	time_t _oldTime = CELLTime::getNowInMilliSec();
+	void CheckTime()
+	{
+		auto nowTime = CELLTime::getNowInMilliSec();
+		auto dt = nowTime - _oldTime;
+		_oldTime = nowTime;
+		for (auto iter = _clients.begin(); iter!=_clients.end(); )
+		{
+			if (iter->second->checkHeart(dt))
+			{
+				if (_pNetEvent)
+				{
+					_pNetEvent->OnNetLeave(iter->second);
+				}
+				_clients_change = true;
+				delete iter->second;
+				auto iterOld = iter;
+				iter++;
+				_clients.erase(iterOld);
+			}
+			else {
+				iter++;
+			}
+		}
+	}
+
+
+	void RecvData(fd_set&fdRead)
+	{
+		//ä¼˜åŒ–2:_clientsä»vectoræ¢æˆmap,æ”¾å¼ƒFD_ISETå»åˆ¤æ–­fdæ˜¯å¦æœ‰äº‹ä»¶
+#ifdef _WIN32
+		for (int n = 0; n < fdRead.fd_count; n++)
+		{
+			auto iter = _clients.find(fdRead.fd_array[n]);
+			if (iter != _clients.end())
+			{
+				if (-1 == RecvData(iter->second))
+				{
+					if (_pNetEvent)
+						_pNetEvent->OnNetLeave(iter->second);
+					_clients_change = true;
+					_clients.erase(iter->first);
+				}
+			}
+			else {
+				printf("error. if (iter == _clients.end())\n");
+			}
+		}
+
+#else
+		std::vector<CellClient*> temp;
+		for (auto iter : _clients)
+		{
+			if (FD_ISSET(iter.second->sockfd(), &fdRead))
+			{
+				if (-1 == RecvData(iter.second))
+				{
+					if (_pNetEvent)
+						_pNetEvent->OnNetLeave(iter.second);
+					_clients_change = true;
+					temp.push_back(iter.second);
+				}
+			}
+		}
+		for (auto pClient : temp)
+		{
+			_clients.erase(pClient->sockfd());
+			delete pClient;
+		}
+#endif
+		//printf("ç©ºé—²æ—¶é—´å¤„ç†å…¶å®ƒä¸šåŠ¡..\n");
+	}
+
+
+	//æ¥å—æ•°æ® å¤„ç†ç²˜åŒ… æ‹†åˆ†åŒ…
 	int RecvData(CellClient* pClient) {
 		char* _szRecv = pClient->msgBuf() + pClient->getLastPos();
 		int nLen = (int)recv(pClient->sockfd(), _szRecv, (RECV_BUFF_SIZE)-pClient->getLastPos(), 0);
@@ -190,14 +220,14 @@ public:
 			}
 			else
 			{
-				//printf("ÏûÏ¢»º³åÇøÖĞµÄÏûÏ¢²»×ã¹»Ò»ÌõÍê³ÉµÄÏûÏ¢");
+				//printf("æ¶ˆæ¯ç¼“å†²åŒºä¸­çš„æ¶ˆæ¯ä¸è¶³å¤Ÿä¸€æ¡å®Œæˆçš„æ¶ˆæ¯");
 				break;
 			}
 		}
 		return 0;
 	}
 
-	//ÏìÓ¦ÍøÂçÇëÇó
+	//å“åº”ç½‘ç»œè¯·æ±‚
 	virtual void OnNetMsg(CellClient* pClient, netmsg_DataHeader* header)
 	{
 		_pNetEvent->OnNetMsg(this, pClient, header);
@@ -211,15 +241,15 @@ public:
 		//_mutex.unlock();
 	}
 
-	void addSendTask(CellClient* pClient, netmsg_DataHeader* header) {
-		_taskServer.addTask([pClient, header]() {
-			pClient->SendData(header);
-			delete header;
-		});
-	}
+	//void addSendTask(CellClient* pClient, netmsg_DataHeader* header) {
+	//	_taskServer.addTask([pClient, header]() {
+	//		pClient->SendData(header);
+	//		delete header;
+	//	});
+	//}
 
 	void Start() {
-		//¶ÔÏóº¯ÊıÄ¬ÈÏµÚÒ»¸ö²ÎÊıÊÇ¸öthis
+		//å¯¹è±¡å‡½æ•°é»˜è®¤ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯ä¸ªthis
 		//_thread = std::thread t(&CellServer::OnRun, this);
 		_thread = std::thread(std::mem_fn(&CellServer::OnRun), this);
 		_taskServer.Start();
@@ -231,14 +261,14 @@ public:
 
 private:
 	SOCKET _sock;
-	////ÕıÊ½¿Í»§¶ÓÁĞ
-	//std::vector<ClientSocket*> _clients;//¾¡Á¿ÓÃ¶ÑÄÚ´æ c++Õ»ÄÚ´æÌ«Ğ¡
-	////»º³å¿Í»§¶ÓÁĞ
+	////æ­£å¼å®¢æˆ·é˜Ÿåˆ—
+	//std::vector<ClientSocket*> _clients;//å°½é‡ç”¨å †å†…å­˜ c++æ ˆå†…å­˜å¤ªå°
+	////ç¼“å†²å®¢æˆ·é˜Ÿåˆ—
 	//std::vector<ClientSocket*> _clientsBuff;
 
-	//ÕıÊ½¿Í»§¶ÓÁĞ
+	//æ­£å¼å®¢æˆ·é˜Ÿåˆ—
 	std::map<SOCKET, CellClient*> _clients;
-	//»º³å¿Í»§¶ÓÁĞ
+	//ç¼“å†²å®¢æˆ·é˜Ÿåˆ—
 	std::vector<CellClient*> _clientsBuff;
 
 	//
