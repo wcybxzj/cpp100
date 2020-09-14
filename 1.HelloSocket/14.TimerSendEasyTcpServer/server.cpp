@@ -95,8 +95,8 @@ private:
 };
 
 
-int main() {
-
+void test1()
+{
 #ifndef _WIN32
 	signal(SIGPIPE, SIG_IGN);
 #endif
@@ -132,5 +132,29 @@ int main() {
 
 	printf("服务器已经退出\n");
 	getchar();
+}
+
+//如果不使用CellSemaphore来保证task.Close()时候task线程已经退出就会造成问题
+//有问题时候的输出:
+//CellTaskServer - 1.Close begin
+//CellTaskServer - 1.Close end
+//CellTaskServer - 1.OnRun exit--->退出了还执行
+
+//正确的输出:
+//CellTaskServer - 1.Close begin
+//CellTaskServer - 1.OnRun exit-->OK
+//CellTaskServer - 1.Close end
+void test2(){
+	CellTaskServer task;
+	task.Start();
+	Sleep(1);
+	task.Close();
+	system("pause");
+}
+
+int main() {
+	test1();
+	//test2();
+
 	return 0;
 }

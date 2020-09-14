@@ -15,37 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="1.args.cpp">
+    <ClInclude Include="CELL.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="2.time.cpp">
+    </ClInclude>
+    <ClInclude Include="CELLClient.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="3.class.cpp">
+    </ClInclude>
+    <ClInclude Include="CELLSemaphore.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="4.left_right_value.cpp">
+    </ClInclude>
+    <ClInclude Include="CELLServer.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="5.left_right_value.cpp">
+    </ClInclude>
+    <ClInclude Include="CELLTask.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="6.left_right_value.cpp">
+    </ClInclude>
+    <ClInclude Include="CELLThread.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="7.left_right_value.cpp">
+    </ClInclude>
+    <ClInclude Include="CELLTimestamp.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="8.test.cpp">
+    </ClInclude>
+    <ClInclude Include="EasyTcpServer.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="9.const.cpp">
+    </ClInclude>
+    <ClInclude Include="INetEvent.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="10.time.cpp">
+    </ClInclude>
+    <ClInclude Include="MessageHeader.hpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="11.static_class.cpp">
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="index.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

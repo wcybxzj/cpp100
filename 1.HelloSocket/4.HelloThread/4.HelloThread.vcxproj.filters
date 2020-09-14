@@ -15,19 +15,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="2.main_lock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="main2.cpp">
+    <ClCompile Include="1.main_thread_basic.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="main3_sleep.cpp">
+    <ClCompile Include="3.main_sleep.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="5.mem_fn.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="4.thread_sem1.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="4.thread_sem2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="6.unique_lock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="7.cond.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="8.wait.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CELLTimestamp.hpp">
-      <Filter>头文件</Filter>
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

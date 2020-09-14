@@ -3,24 +3,6 @@
 
 bool g_bRun = true;
 
-void cmdThread() {
-	char cmdBuf[256] = {};
-	while (true)
-	{
-		scanf("%s", cmdBuf);
-		if (0 == strcmp("exit", cmdBuf))
-		{
-			g_bRun = false;
-			printf("退出cmdThread线程!!!!\n");
-			break;
-		}
-		else 
-		{
-			printf("不支持的命令\n");
-		}
-	}
-}
-
 class MyServer : public EasyTcpServer
 {
 public:
@@ -58,8 +40,10 @@ public:
 			//	cSock, login->dataLength, login->userName, login->PassWord);
 			
 			netmsg_LoginR ret;
-			pClient->SendData(&ret);
-
+			if (pClient->SendData(&ret) == SOCKET_ERROR)
+			{
+				CELLLog::Info("<Socket=%d> 用户定义发送缓冲区满了!\n", pClient->sockfd());
+			}
 			//netmsg_LoginR* ret = new netmsg_LoginR();
 			//pCellServer->addSendTask(pClient, ret);
 			break;
@@ -82,34 +66,19 @@ public:
 		}
 		default:
 		{
-			printf("<socket=%d>收到未定义消息,数据长度：%d\n", pClient->sockfd(), header->dataLength);
+			CELLLog::Info("<socket=%d>收到未定义消息,数据长度：%d\n", pClient->sockfd(), header->dataLength);
 			//DataHeader ret;
 			//SendData(cSock, &ret);
 			break;
 		}
 		}
 	}
-
-private:
-
 };
 
 
-int main() {
-
-#ifndef _WIN32
-	signal(SIGPIPE, SIG_IGN);
-#endif
-
-#ifndef WIN32
-	sigset_t signal_mask;
-	sigemptyset(&signal_mask);
-	sigaddset(&signal_mask, SIGPIPE);
-	int rc = pthread_sigmask(SIG_BLOCK, &signal_mask, NULL);
-	if (rc != 0) {
-		printf("block sigpipe error\n");
-	}
-#endif 
+void test1()
+{
+	CELLLog::Instance().setLogPath("serverLog.txt", "w");
 
 	MyServer server;
 	server.InitSocket();
@@ -117,20 +86,28 @@ int main() {
 	server.Listen(5);
 	server.Start(4);
 
-	//启动UI线程
-	std::thread t1(cmdThread);
-	t1.detach();
-
-	while (g_bRun)
+	char cmdBuf[256] = {};
+	while (true)
 	{
-		server.OnRun();
-		//printf("空闲时间处理其它业务..\n");
+		scanf("%s", cmdBuf);
+		if (0 == strcmp("exit", cmdBuf))
+		{
+			server.Close();
+			CELLLog::Info("退出cmdThread线程!!!!\n");
+			break;
+		}
+		else
+		{
+			CELLLog::Info("不支持的命令\n");
+		}
 	}
-	server.Close();
-	printf("已退出。\n");
-	getchar();
 
-	printf("服务器已经退出\n");
-	getchar();
+	CELLLog::Info("已退出。\n");
+	//system("pause");
+
+}
+
+int main() {
+	test1();
 	return 0;
 }

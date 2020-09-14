@@ -25,75 +25,45 @@
 #include <ctime>
 #include <atomic>
 #include <mutex>
-#include<chrono>
+#include<thread>
+
 using namespace std;
 
-class Class1 {
+
+//演示为什么必须让主线程等待子线程运行结束
+//父子线程的heap内存是共享的如果
+
+class A {
 public:
-	~Class1() {
-		printf("destuct Class1\n");
-	}
+	int* Pa;
 
-	void func1() {
-		while (true)
-		{
-			printf("func1()\n");
-		}
-	}
-
-	void func2() {
-		while (true)
-		{
-			printf("func2()\n");
-		}
-	}
-
-};
-
-Class1 *c1;
-
-void f1() {
-	c1->func1();
-}
-
-void f2() {
-	c1->func1();
-}
-
-void f3() {
-	delete c1;
-	for (int i = 0; i < 1000; i++)
+	A()
 	{
-		printf("delete c1\n");
+		Pa = new int(11);
 	}
-}
 
-void test1() {
-	c1 = new Class1();
-	delete c1;
-	c1->func1();//still work
-}
+	void OnRun()
+	{
+		for (int i = 0; i < 100000; i++)
+		{		
+			(*Pa) += 1;//error 因外主线程把这里delte了
+			cout << (*Pa) << endl;
+			std::chrono::milliseconds t(100);
+			std::this_thread::sleep_for(t);
+		}
+	}
 
-
-void test2() {
-	c1 = new Class1();
-
-	std::thread t1(f1);
-	t1.detach();
-
-	std::thread t2(f2);
-	t2.detach();
-
-	std::chrono::seconds t(1);
-	std::this_thread::sleep_for(t);
-
-	std::thread t3(f3);
-	t3.detach();
-}
+	void Start() {
+			std::thread t = std::thread(std::mem_fn(&A::OnRun), this);
+			t.detach();
+	}
+};
 
 int main()
 {
-
+	A* obj1 = new A;
+	obj1->Start();
+	delete obj1;
 
 	system("pause");
 	return EXIT_SUCCESS;

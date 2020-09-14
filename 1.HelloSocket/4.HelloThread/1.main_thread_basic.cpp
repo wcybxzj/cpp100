@@ -136,113 +136,15 @@ void test3() {
 	getchar();
 }
 
-//普通互斥锁
-void func4() {
-	for (int i = 0; i < 10000000; i++)
-	{
-		m.lock();
-		sum++;
-		m.unlock();
-	}
+void test4()
+{
+	cout << "test4()" << endl;
 }
-
-void test4() {
-	sum = 0;
-	thread t[tCount];
-	for (int i = 0; i < tCount; i++)
-	{
-		t[i] = thread(func4);
-	}
-	
-	CELLTimestamp tTime;
-
-	for (int i = 0; i < tCount; i++)
-	{
-		t[i].join();
-	}
-	cout <<"耗时:（毫秒):" <<tTime.getElapsedTimeInMilliSec() << endl;
-	cout << sum << endl;
-
-
-}
-
-//自解锁:只要代码运行出了{} 自动解锁
-void func5() {
-	for (int i = 0; i < 10000000; i++)
-	{
-		lock_guard<mutex> lg(m);
-		sum++;
-	}
-}
-
-void test5() {
-	sum = 0;
-	thread t[tCount];
-	for (int i = 0; i < tCount; i++)
-	{
-		t[i] = thread(func5);
-	}
-
-	CELLTimestamp tTime;
-
-	for (int i = 0; i < tCount; i++)
-	{
-		t[i].join();
-	}
-	cout << "耗时:（毫秒):" << tTime.getElapsedTimeInMilliSec() << endl;
-	cout << sum << endl;
-}
-
-//原子变量:
-void func6() {
-	for (int i = 0; i < 10000000; i++)
-	{
-		sum2++;
-	}
-}
-
-/*
-
-耗时:（毫秒):1356.46(多线程+原子int 耗时更少)
-40000000
-耗时 : （毫秒):1424.43
-40000000
-*/
-void test6() {
-	sum2 = 0;
-	thread t[tCount];
-	for (int i = 0; i < tCount; i++)
-	{
-		t[i] = thread(func6);
-	}
-
-	CELLTimestamp tTime;
-
-	for (int i = 0; i < tCount; i++)
-	{
-		t[i].join();
-	}
-	cout << "耗时:（毫秒):" << tTime.getElapsedTimeInMilliSec() << endl;
-	cout << sum2 << endl;
-
-
-	tTime.update();
-	sum2 = 0;
-	for (int i = 0; i < 40000000; i++)
-	{
-		sum2++;
-	}
-	cout << "耗时:（毫秒):" << tTime.getElapsedTimeInMilliSec() << endl;
-	cout << sum2 << endl;
-}
-
 int main() {
 	//test1();
 	//test2();
 	//test3();
-	//test4();
-	//test5();
-	test6();
+	test4();
 }
 
 #endif

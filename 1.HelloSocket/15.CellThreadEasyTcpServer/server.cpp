@@ -3,24 +3,6 @@
 
 bool g_bRun = true;
 
-void cmdThread() {
-	char cmdBuf[256] = {};
-	while (true)
-	{
-		scanf("%s", cmdBuf);
-		if (0 == strcmp("exit", cmdBuf))
-		{
-			g_bRun = false;
-			printf("退出cmdThread线程!!!!\n");
-			break;
-		}
-		else 
-		{
-			printf("不支持的命令\n");
-		}
-	}
-}
-
 class MyServer : public EasyTcpServer
 {
 public:
@@ -95,8 +77,8 @@ private:
 };
 
 
-int main() {
-
+void test1()
+{
 #ifndef _WIN32
 	signal(SIGPIPE, SIG_IGN);
 #endif
@@ -115,22 +97,30 @@ int main() {
 	server.InitSocket();
 	server.Bind(nullptr, 4567);
 	server.Listen(5);
-	server.Start(4);
+	server.Start(1);
 
-	//启动UI线程
-	std::thread t1(cmdThread);
-	t1.detach();
-
-	while (g_bRun)
+	char cmdBuf[256] = {};
+	while (true)
 	{
-		server.OnRun();
-		//printf("空闲时间处理其它业务..\n");
+		scanf("%s", cmdBuf);
+		if (0 == strcmp("exit", cmdBuf))
+		{
+			server.Close();
+			printf("退出cmdThread线程!!!!\n");
+			break;
+		}
+		else
+		{
+			printf("不支持的命令\n");
+		}
 	}
-	server.Close();
-	printf("已退出。\n");
-	getchar();
 
-	printf("服务器已经退出\n");
-	getchar();
+	printf("已退出。\n");
+	system("pause");
+
+}
+
+int main() {
+	test1();
 	return 0;
 }

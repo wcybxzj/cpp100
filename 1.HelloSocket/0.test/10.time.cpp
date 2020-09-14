@@ -1,4 +1,4 @@
-#if 1
+#if 0
 #define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
 #include<ctime>
@@ -28,37 +28,25 @@
 
 using namespace std;
 
-class Class1 {
-public:
-	void OnRun()
-	{
-		while (1) {
-			std::chrono::milliseconds t(1000);
-			std::this_thread::sleep_for(t);
-			
-			cout << "111111" << endl;
-		}
-	}
 
-	void Start() {
-		std::thread t(std::mem_fn(&Class1::OnRun), this);
-		t.detach();
-	}
+void test1()
+{
+	time_t t;
+	t = time(&t);
+	//Today'sdateandtime:Mon Sep 14 16:28:25 2020
+	printf("Today'sdateandtime:%s\n", ctime(&t));
 
-};
-
+	std::tm* now = std::gmtime(&t);
+	//[2020-9-14 8:29:45]
+	printf("[%d-%d-%d %d:%d:%d]",
+		now->tm_year + 1900, now->tm_mon + 1,
+		now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
+}
 
 int main()
 {
+	test1();
 
-	Class1 c1;
-	c1.Start();
-
-
-	while (1) {
-		Sleep(1);
-		cout << "2222" << endl;
-	}
 
 	system("pause");
 	return EXIT_SUCCESS;

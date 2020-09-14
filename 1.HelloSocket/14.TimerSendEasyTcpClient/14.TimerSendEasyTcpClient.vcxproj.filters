@@ -15,38 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="1.args.cpp">
+    <ClInclude Include="CELLTimestamp.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyTcpClient.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHeader.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="2.time.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="3.class.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="4.left_right_value.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="5.left_right_value.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="6.left_right_value.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="7.left_right_value.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="8.test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="9.const.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="10.time.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="11.static_class.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="index.txt" />
   </ItemGroup>
 </Project>

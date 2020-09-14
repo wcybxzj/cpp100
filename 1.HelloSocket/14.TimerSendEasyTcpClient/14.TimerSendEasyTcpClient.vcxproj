@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{41D31333-CBA8-4383-B7AC-74D662989852}</ProjectGuid>
-    <RootNamespace>My4HelloThread</RootNamespace>
+    <ProjectGuid>{24894E4E-76A6-42F6-8D14-C2D2D5048C10}</ProjectGuid>
+    <RootNamespace>My14TimerSendEasyTcpClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,18 +146,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="1.main_thread_basic.cpp" />
-    <ClCompile Include="3.main_sleep.cpp" />
-    <ClCompile Include="2.main_lock.cpp" />
-    <ClCompile Include="4.thread_sem1.cpp" />
-    <ClCompile Include="5.mem_fn.cpp" />
-    <ClCompile Include="4.thread_sem2.cpp" />
-    <ClCompile Include="6.unique_lock.cpp" />
-    <ClCompile Include="7.cond.cpp" />
-    <ClCompile Include="8.wait.cpp" />
+    <ClInclude Include="CELLTimestamp.hpp" />
+    <ClInclude Include="EasyTcpClient.hpp" />
+    <ClInclude Include="MessageHeader.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CELLTimestamp.hpp" />
+    <ClCompile Include="client.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="index.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

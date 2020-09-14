@@ -46,6 +46,7 @@ void recvThread(int begin, int end) {
 	}
 }
 
+
 //线程id:1-4
 void sendThread(int id) {
 	printf("thread<%d> start", id);
@@ -112,10 +113,10 @@ void sendThread(int id) {
 		}
 
 		////重要:!!!!!!!!!!!
-		////重要:用来配合测试服务断定时发送数据
+		////重要:用来配合测试服务端定时发送数据
 		////可以调试服务端口 定时Send发送
-		//std::chrono::milliseconds t1(100);
-		//std::this_thread::sleep_for(t1);
+		std::chrono::milliseconds t1(100);
+		std::this_thread::sleep_for(t1);
 	}
 
 	for (int i = begin; i < end; i++)
@@ -141,10 +142,8 @@ void test1() {
 	}
 }
 
-
+//这个client唯一的用处就是会发很少的数据来配合14.TimerSendEasyTcpServer
 int main() {
-
-
 	std::thread t1(cmdThread);
 	t1.detach();
 

@@ -147,7 +147,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="1.args.cpp" />
+    <ClCompile Include="10.time.cpp" />
+    <ClCompile Include="11.static_class.cpp" />
     <ClCompile Include="2.time.cpp" />
+    <ClCompile Include="3.class.cpp" />
+    <ClCompile Include="4.left_right_value.cpp" />
+    <ClCompile Include="5.left_right_value.cpp" />
+    <ClCompile Include="6.left_right_value.cpp" />
+    <ClCompile Include="7.left_right_value.cpp" />
+    <ClCompile Include="8.test.cpp" />
+    <ClCompile Include="9.const.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
