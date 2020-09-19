@@ -1,6 +1,9 @@
-ï»¿//linux:make -f index.txt
+//linux:make -f index.txt
 #include"EasyTcpServer.hpp"
-#include"CELLMsgStream.hpp"
+#include "CELLMsgStream.hpp"
+
+#include<iostream>
+using namespace std;
 
 bool g_bRun = true;
 
@@ -8,26 +11,26 @@ class MyServer : public EasyTcpServer
 {
 public:
 
-	//åªä¼šè¢«ä¸€ä¸ªçº¿ç¨‹è§¦å‘ å®‰å…¨
+	//Ö»»á±»Ò»¸öÏß³Ì´¥·¢ °²È«
 	virtual void OnNetJoin(CellClient* pClient)
 	{
 		EasyTcpServer::OnNetJoin(pClient);
 	}
 
-	//cellServer 4 å¤šä¸ªçº¿ç¨‹è§¦å‘ ä¸å®‰å…¨
-	//å¦‚æœåªå¼€å¯1ä¸ªcellServerå°±æ˜¯å®‰å…¨çš„
+	//cellServer 4 ¶à¸öÏß³Ì´¥·¢ ²»°²È«
+	//Èç¹ûÖ»¿ªÆô1¸öcellServer¾ÍÊÇ°²È«µÄ
 	virtual void OnNetLeave(CellClient* pClient)
 	{
 		EasyTcpServer::OnNetLeave(pClient);
 	}
 
-	virtual void OnNetMsg(CellServer *pCellServer, CellClient* pClient, netmsg_DataHeader* header)
+	virtual void OnNetMsg(CellServer* pCellServer, CellClient* pClient, netmsg_DataHeader* header)
 	{
 		EasyTcpServer::OnNetMsg(pCellServer, pClient, header);
 
 		netmsg_Login* login;
 		netmsg_Logout* logout;
-		
+
 		netmsg_LogoutR ret1;
 
 		switch (header->cmd)
@@ -35,20 +38,21 @@ public:
 		case CMD_LOGIN:
 		{
 			pClient->resetDTHeart();
-			//ç»§ç»­å°†bodyéƒ¨åˆ†è¯»å…¥åˆ°szRecv
+			//¼ÌĞø½«body²¿·Ö¶ÁÈëµ½szRecv
 			login = (netmsg_Login*)header;
-			//printf("å®¢æˆ·ç«¯:%d,æ”¶åˆ°å‘½ä»¤:CMD_LOGIN, len:%d, username:%s, password:%s\n",
+			//printf("¿Í»§¶Ë:%d,ÊÕµ½ÃüÁî:CMD_LOGIN, len:%d, username:%s, password:%s\n",
 			//	cSock, login->dataLength, login->userName, login->PassWord);
-			
+
 			netmsg_LoginR ret;
 			if (pClient->SendData(&ret) == SOCKET_ERROR)
 			{
-				CELLLog::Info("<Socket=%d> ç”¨æˆ·å®šä¹‰å‘é€ç¼“å†²åŒºæ»¡äº†!\n", pClient->sockfd());
+				CELLLog::Info("<Socket=%d> ÓÃ»§¶¨Òå·¢ËÍ»º³åÇøÂúÁË!\n", pClient->sockfd());
 			}
 			//netmsg_LoginR* ret = new netmsg_LoginR();
 			//pCellServer->addSendTask(pClient, ret);
 			break;
 		}
+
 		case CMD_LOGOUT:
 		{
 			CELLRecvStream r(header);
@@ -65,7 +69,9 @@ public:
 			auto n7 = r.ReadArray(pw, 32);
 			int ata[10] = {};
 			auto n8 = r.ReadArray(ata, 10);
-			///
+			cout << name << endl;
+
+			//
 			CELLSendStream s(128);
 			s.setNetCmd(CMD_LOGOUT_RESULT);
 			s.WriteInt8(1);
@@ -81,7 +87,6 @@ public:
 			s.WriteArray(b, 5);
 			s.finish();
 			pClient->SendData(s.data(), s.length());
-
 			break;
 		}
 		case CMD_C2S_HEART:
@@ -92,7 +97,7 @@ public:
 		}
 		default:
 		{
-			CELLLog::Info("<socket=%d>æ”¶åˆ°æœªå®šä¹‰æ¶ˆæ¯,æ•°æ®é•¿åº¦ï¼š%d\n", pClient->sockfd(), header->dataLength);
+			CELLLog::Info("<socket=%d>ÊÕµ½Î´¶¨ÒåÏûÏ¢,Êı¾İ³¤¶È£º%d\n", pClient->sockfd(), header->dataLength);
 			//DataHeader ret;
 			//SendData(cSock, &ret);
 			break;
@@ -119,16 +124,16 @@ void test1()
 		if (0 == strcmp("exit", cmdBuf))
 		{
 			server.Close();
-			CELLLog::Info("é€€å‡ºcmdThreadçº¿ç¨‹!!!!\n");
+			CELLLog::Info("ÍË³öcmdThreadÏß³Ì!!!!\n");
 			break;
 		}
 		else
 		{
-			CELLLog::Info("ä¸æ”¯æŒçš„å‘½ä»¤\n");
+			CELLLog::Info("²»Ö§³ÖµÄÃüÁî\n");
 		}
 	}
 
-	CELLLog::Info("å·²é€€å‡ºã€‚\n");
+	CELLLog::Info("ÒÑÍË³ö¡£\n");
 	//system("pause");
 
 }

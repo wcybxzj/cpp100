@@ -149,6 +149,7 @@
     <ClCompile Include="1.args.cpp" />
     <ClCompile Include="10.time.cpp" />
     <ClCompile Include="11.static_class.cpp" />
+    <ClCompile Include="12.func_arg.cpp" />
     <ClCompile Include="2.time.cpp" />
     <ClCompile Include="3.class.cpp" />
     <ClCompile Include="4.left_right_value.cpp" />

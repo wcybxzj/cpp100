@@ -19,6 +19,12 @@ private:
 	bool _isRun = false;
 
 public:
+	static void Sleep(time_t dt)
+	{
+		std::chrono::milliseconds t(dt);
+		std::this_thread::sleep_for(t);
+	}
+
 	void Start(
 		EventCall onCreate = nullptr,
 		EventCall onRun = nullptr,

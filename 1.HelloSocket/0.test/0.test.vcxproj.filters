@@ -48,5 +48,8 @@
     <ClCompile Include="11.static_class.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="12.func_arg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

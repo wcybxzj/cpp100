@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="index.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

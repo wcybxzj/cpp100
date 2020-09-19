@@ -1,23 +1,61 @@
 ﻿#include"EasyTcpClient.hpp"
 #include<iostream>
 
-//#include"CELLTimestamp.hpp"
-
 //linux:make -f index.txt
 
-bool g_bRun = true;
 
+class MyClient :public EasyTcpClient
+{
+public:
+	virtual void OnNetMsg(netmsg_DataHeader *header)
+	{
+		switch (header->cmd)
+		{
+			case CMD_LOGIN_RESULT:
+			{
+				netmsg_LoginR* login = (netmsg_LoginR*)header;
+			}
+			break;
+
+			case CMD_LOGOUT_RESULT:
+			{
+				netmsg_LogoutR*logout = (netmsg_LogoutR*)header;
+			}
+			break;
+			
+			case CMD_NEW_USER_JOIN:
+			{
+				netmsg_NewUserJoin* userJoin = (netmsg_NewUserJoin*)header;
+			}
+			break;
+
+			case CMD_ERROR:
+			{
+				CELLLog::Info("<socket=%d> recv msgType:CMD_ERROR\n",
+					(int)_pClient->sockfd());
+			}
+			break;
+
+			default:
+			{
+				CELLLog::Info("error, <socket=%d> recv undefine msgType\n",
+					(int)_pClient->sockfd());
+			}
+		}
+	}
+};
+
+bool g_bRun = true;
 //客户端总数量
 const int cCount = 10;
-
 //线程数量
 const int tCount = 1;
-
 EasyTcpClient* client[cCount];
 //发送计数
-std::atomic_int sendCount = 0;
+std::atomic_int sendCount(0);
 //继续线程计数:目标是让多个并发先的线程一起工作
-std::atomic_int readyCount = 0;
+std::atomic_int readyCount(0);
+
 
 void cmdThread() {
 	char cmdBuf[256] = {};
@@ -44,10 +82,10 @@ void recvThread(int begin, int end) {
 		for (int i = begin; i < end; i++)
 		{
 			//接受超过了3秒 并且是第一个socket就不再接收数据
-			if (t.getElapsedSecond()> 3.0 && i == begin)
-			{
-				continue;
-			}
+			//if (t.getElapsedSecond()> 3.0 && i == begin)
+			//{
+			//	continue;
+			//}
 			client[i]->OnRun();
 		}
 	}
@@ -56,7 +94,7 @@ void recvThread(int begin, int end) {
 
 //线程id:1-4
 void sendThread(int id) {
-	printf("thread<%d> start", id);
+	CELLLog::Info("thread<%d> start\n", id);
 	int fd_nums = cCount / tCount;
 	int begin = (id - 1) * fd_nums;
 	int end = id * fd_nums;
@@ -67,7 +105,7 @@ void sendThread(int id) {
 		{
 			return;
 		}
-		client[i] = new EasyTcpClient();
+		client[i] = new MyClient();
 	}
 
 	for (int i = begin; i < end; i++)
@@ -82,7 +120,8 @@ void sendThread(int id) {
 		//client[i]->Connect("192.168.204.132", 4567);//ubuntu
 	}
 
-	printf("thread<%d>, connect fd range<begin:%d, end:%d>", id, begin, end);
+	CELLLog::Info("thread<%d>, connect fd range<begin:%d, end:%d>",
+		id, begin, end);
 
 	//所有线程都connect好后一起进行数据发送
 	readyCount++;
@@ -97,6 +136,7 @@ void sendThread(int id) {
 
 	netmsg_Login login[1];
 	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 1; i++)	
 	{
 		strcpy(login[i].userName, "ybx");
 		strcpy(login[i].PassWord, "12345");
@@ -107,14 +147,14 @@ void sendThread(int id) {
 	{
 		for (int i = begin; i < end; i++)
 		{
-			if (SOCKET_ERROR != client[i]->SendData(login, nLen))
+			if (SOCKET_ERROR != client[i]->SendData(login))
 			{
 				sendCount++;
 			}
 			else
 			{
-				//printf("send errro\n");
-				std::chrono::milliseconds t(1000000);
+				//printf("sendData 用户定义的输出缓冲满了\n");
+				std::chrono::milliseconds t(99);
 				std::this_thread::sleep_for(t);
 			}
 		}
@@ -129,22 +169,9 @@ void sendThread(int id) {
 	printf("thread<%d>, exit", id);
 }
 
-//定时测试
-void test1() {
-	CELLTimestamp t;
-
-	while (1)
-	{
-		if (t.getElapsedSecond()>1.0)
-		{
-			std::cout << "11111111\n" << std::endl;
-			t.update();
-		}
-	}
-}
-
-//这个client唯一的用处就是会发很少的数据来配合14.TimerSendEasyTcpServer
 int main() {
+	CELLLog::Instance().setLogPath("clientLog.txt", "w");
+
 	std::thread t1(cmdThread);
 	t1.detach();
 
@@ -170,6 +197,6 @@ int main() {
 		}
 		//Sleep(1);
 	}
-	printf("client已经退出\n");
+	CELLLog::Info("client已经退出\n");
 	return 0;
 }

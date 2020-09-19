@@ -6,8 +6,11 @@
 class CELLBuffer
 {
 private:
+	//第二缓冲区
 	char* _pBuff = nullptr;
+
 	int _nLast = 0;
+	
 	int _nSize = 0;
 	//写满计数
 	int _fullCount = 0;
@@ -109,6 +112,12 @@ public:
 			return _nLast >= header->dataLength;
 		}
 		return false;
+	}
+
+	//发送缓冲区是否有数据
+	bool needWrite()
+	{
+		return _nLast > 0;
 	}
 
 };

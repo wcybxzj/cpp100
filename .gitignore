@@ -6,6 +6,8 @@
 
 client
 server
+serverLog.txt
+clientLog.txt
 
 # Visual Studio 2015 cache/options directory
 .vs/

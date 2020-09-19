@@ -5,8 +5,8 @@
 #include "CELLBuffer.hpp"
 
 //
-//#define CLIENT_HEART_DEAD_TIME 60000 //60s
-#define CLIENT_HEART_DEAD_TIME 6000//6s
+#define CLIENT_HEART_DEAD_TIME 60000 //60s
+//#define CLIENT_HEART_DEAD_TIME 6000//6s
 
 //在间隔指定时间后
 //把发送缓冲区内缓存的消息数据发送给客户端
@@ -25,6 +25,7 @@ private:
 
 	//心跳死亡计时
 	time_t _dtHeart;
+
 	//上次发送消息数据的时间
 	time_t _dtSend;
 
@@ -80,6 +81,11 @@ public:
 		}
 	}
 
+	bool needWrite()
+	{
+		return _sendBuff.needWrite();
+	}
+
 	//立即将发送缓冲区的数据发送给客户端
 	int SendDataReal()
 	{
@@ -91,9 +97,14 @@ public:
 	//多个package合并到一起一次发送避免send调用次数过多
 	int SendData(netmsg_DataHeader* header)
 	{
-		if (_sendBuff.push((const char*)header, header->dataLength))
+		return SendData((const char*) header, header->dataLength);
+	}
+
+	int SendData(const char* pData, int len)
+	{
+		if (_sendBuff.push(pData, len))
 		{
-			return header->dataLength;
+			return len;
 		}
 		return SOCKET_ERROR;
 	}
